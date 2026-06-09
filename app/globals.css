@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Force full edge-to-edge layout — overrides Tailwind preflight */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
+
+  body {
+    background-color: #0a0a0a;
+    color: #ffffff;
+    font-family: var(--font-inter), 'Inter', sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  * {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  ::selection {
+    background-color: #c1121f;
+    color: #ffffff;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-20 px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-max {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .section-title {
+    @apply text-4xl md:text-5xl lg:text-6xl font-heading tracking-wider text-white;
+  }
+
+  .section-subtitle {
+    @apply text-base md:text-lg text-gray-400 mt-4 max-w-2xl leading-relaxed;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-none transition-all duration-300 uppercase tracking-widest text-sm;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 border border-primary text-primary hover:bg-primary hover:text-white font-semibold px-8 py-4 rounded-none transition-all duration-300 uppercase tracking-widest text-sm;
+  }
+
+  .card-dark {
+    @apply bg-dark-card border border-dark-border rounded-sm overflow-hidden;
+  }
+
+  .red-line {
+    @apply w-16 h-1 bg-primary mt-4 mb-6;
+  }
+
+  .nav-link {
+    @apply relative text-gray-300 hover:text-white text-sm font-medium tracking-widest uppercase transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full;
+  }
+
+  .input-dark {
+    @apply w-full bg-[#141414] border border-dark-border text-white placeholder-gray-600 px-5 py-4 focus:outline-none focus:border-primary transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, #c1121f 0%, #ff4d5a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+}
+
+/* ── Gallery Carousel Marquee Animations ── */
+@keyframes marquee-left {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-33.333%); }
+}
+
+@keyframes marquee-right {
+  0%   { transform: translateX(-33.333%); }
+  100% { transform: translateX(0); }
+}
