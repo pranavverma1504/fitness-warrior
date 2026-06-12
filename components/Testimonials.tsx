@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 /* ─────────────────────────── STATS DATA ─────────────────────────── */
 
@@ -56,198 +57,258 @@ const STATS = [
   },
 ];
 
-/* ─────────────────────────── CONFESSIONS DATA ─────────────────────────── */
+/* ─────────────────────────── REVIEW DATA ─────────────────────────── */
 
-interface Confession {
+interface Review {
   text: string;
   name: string;
-  role: string;
   initials: string;
-  variant: "light" | "red";
+  stars: number;
+  stat: string;
+  variant: "red" | "light" | "dark";
   rotation: number;
 }
 
-const CONFESSIONS: Confession[] = [
+const REVIEWS: Review[] = [
   {
-    text: "I lost 18kg in 6 months and gained confidence I never thought possible.",
+    text: "Best affordable gym in the city. Clean equipment and great trainers who actually care about your progress.",
     name: "Anjali Mishra",
-    role: "Weight Loss Journey",
     initials: "AM",
+    stars: 5,
+    stat: "Lost 18kg",
+    variant: "red",
+    rotation: -2.5,
+  },
+  {
+    text: "The environment keeps me motivated every single day. The community here is like family.",
+    name: "Priya Verma",
+    initials: "PV",
+    stars: 5,
+    stat: "1 Year Member",
+    variant: "light",
+    rotation: 1.8,
+  },
+  {
+    text: "Modern equipment, expert coaching, and an amazing community. This gym transformed my lifestyle completely.",
+    name: "Rahul Sharma",
+    initials: "RS",
+    stars: 5,
+    stat: "Gained 9kg Muscle",
+    variant: "dark",
+    rotation: -1.5,
+  },
+  {
+    text: "From beginner to deadlifting 140kg — Fitness Warrior changed my mindset and my body.",
+    name: "Amit Patel",
+    initials: "AP",
+    stars: 5,
+    stat: "Strength +180%",
+    variant: "red",
+    rotation: 2.2,
+  },
+  {
+    text: "Professional coaches, modern machines, and a community that pushes you to be your best self.",
+    name: "Vikram Singh",
+    initials: "VS",
+    stars: 5,
+    stat: "CrossFit Athlete",
+    variant: "light",
+    rotation: -3,
+  },
+  {
+    text: "The Zumba classes are incredible. I look forward to them every single morning without fail.",
+    name: "Sneha Gupta",
+    initials: "SG",
+    stars: 5,
+    stat: "Lost 12kg",
+    variant: "dark",
+    rotation: 1.2,
+  },
+  {
+    text: "Four locations across Bhilai and every single one maintains the same quality. That's rare.",
+    name: "Deepak Tiwari",
+    initials: "DT",
+    stars: 5,
+    stat: "2 Year Member",
     variant: "light",
     rotation: -2,
   },
   {
-    text: "Clean equipment, great trainers, and a motivating environment every day.",
-    name: "Priya Verma",
-    role: "Zumba Enthusiast",
-    initials: "PV",
+    text: "My trainer understood my body type and created a plan that actually worked. Real results in 3 months.",
+    name: "Kavita Nair",
+    initials: "KN",
+    stars: 5,
+    stat: "Body Transformed",
     variant: "red",
-    rotation: 3,
+    rotation: 2.8,
   },
   {
-    text: "The best affordable gym in the city with premium facilities.",
-    name: "Vikram Singh",
-    role: "Fitness Member",
-    initials: "VS",
+    text: "Clean, well-maintained, with the latest equipment. Worth every rupee of the membership.",
+    name: "Mohit Agarwal",
+    initials: "MA",
+    stars: 5,
+    stat: "6 Month Member",
+    variant: "dark",
+    rotation: -1.8,
+  },
+  {
+    text: "I started at 95kg and I'm now at 78kg. The trainers here don't let you give up on yourself.",
+    name: "Ritu Pandey",
+    initials: "RP",
+    stars: 5,
+    stat: "Lost 17kg",
     variant: "light",
-    rotation: -4,
-  },
-  {
-    text: "From beginner to deadlifting 140kg — Fitness Warrior changed my mindset.",
-    name: "Amit Patel",
-    role: "Strength Training",
-    initials: "AP",
-    variant: "red",
-    rotation: 2,
-  },
-  {
-    text: "Professional coaches, modern machines, and a community that pushes you forward.",
-    name: "Rahul Sharma",
-    role: "CrossFit Athlete",
-    initials: "RS",
-    variant: "light",
-    rotation: -3,
+    rotation: 3.2,
   },
 ];
 
-/* ─────────────────────────── GRID POSITIONS ─────────────────────────── */
+/* ─────────────────────────── STAR COMPONENT ─────────────────────────── */
 
-/*
-  Each card gets a CSS grid area plus a nudge offset for the scattered feel.
-  On desktop this creates an organic editorial composition with partial overlaps.
-*/
-const CARD_POSITIONS: {
-  gridColumn: string;
-  gridRow: string;
-  nudgeX: number;
-  nudgeY: number;
-  zIndex: number;
-}[] = [
-  { gridColumn: "1 / 6",   gridRow: "1 / 2",  nudgeX: 20,   nudgeY: 0,    zIndex: 2 },
-  { gridColumn: "6 / 12",  gridRow: "1 / 2",  nudgeX: -10,  nudgeY: 40,   zIndex: 3 },
-  { gridColumn: "2 / 7",   gridRow: "2 / 3",  nudgeX: -15,  nudgeY: -30,  zIndex: 1 },
-  { gridColumn: "7 / 12",  gridRow: "2 / 3",  nudgeX: 10,   nudgeY: -10,  zIndex: 4 },
-  { gridColumn: "3 / 9",   gridRow: "3 / 4",  nudgeX: 30,   nudgeY: -40,  zIndex: 2 },
-];
+function Stars({ count, variant }: { count: number; variant: Review["variant"] }) {
+  const color = variant === "light" ? "#c1121f" : variant === "red" ? "#ffffff" : "#c1121f";
+  return (
+    <div className="flex gap-0.5">
+      {Array.from({ length: count }).map((_, i) => (
+        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill={color} aria-hidden="true">
+          <path d="M12 2l2.39 7.26H22l-6.19 4.5 2.36 7.24L12 17l-6.17 4L8.19 13.76 2 9.26h7.61z" />
+        </svg>
+      ))}
+    </div>
+  );
+}
 
-/* ─────────────────────────── CONFESSION CARD ─────────────────────────── */
+/* ─────────────────────────── REVIEW CARD ─────────────────────────── */
 
-function ConfessionCard({
-  confession,
-  index,
-}: {
-  confession: Confession;
-  index: number;
-}) {
-  const pos = CARD_POSITIONS[index];
-  const isRed = confession.variant === "red";
+function ReviewCard({ review }: { review: Review }) {
+  const isRed = review.variant === "red";
+  const isLight = review.variant === "light";
+  const isDark = review.variant === "dark";
 
-  /* Floating animation — each card floats on a slightly different cycle */
-  const floatDuration = 5 + index * 0.7;
+  const cardBg = isRed
+    ? "linear-gradient(145deg, #c1121f 0%, #960d17 100%)"
+    : isLight
+    ? "linear-gradient(145deg, #f8f5ef 0%, #f0ece4 100%)"
+    : "linear-gradient(145deg, #1a1a1a 0%, #111111 100%)";
+
+  const cardShadow = isRed
+    ? "0 12px 40px rgba(193,18,31,0.2), 0 4px 16px rgba(0,0,0,0.3)"
+    : isLight
+    ? "0 12px 40px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.1)"
+    : "0 12px 40px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3)";
+
+  const textColor = isLight ? "text-[#1a1a1a]" : "text-white";
+  const subTextColor = isRed ? "text-white/60" : isLight ? "text-[#c1121f]" : "text-[#c1121f]";
+  const quoteColor = isRed ? "text-white/15" : isLight ? "text-[#c1121f]/15" : "text-white/10";
+  const dividerColor = isRed ? "bg-white/30" : isLight ? "bg-[#c1121f]/25" : "bg-white/15";
+  const initialsClass = isRed
+    ? "bg-white/20 text-white"
+    : isLight
+    ? "bg-[#c1121f] text-white"
+    : "bg-[#c1121f] text-white";
+  const borderClass = isDark ? "border border-white/[0.06]" : "";
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 60, scale: 0.95 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{
-        duration: 0.8,
-        delay: index * 0.12,
-        ease: [0.16, 1, 0.3, 1],
-      }}
-      className="confession-card-wrapper"
+    <div
+      className={`review-card group relative ${borderClass}`}
       style={{
-        gridColumn: pos.gridColumn,
-        gridRow: pos.gridRow,
-        zIndex: pos.zIndex,
+        background: cardBg,
+        boxShadow: cardShadow,
+        transform: `rotate(${review.rotation}deg)`,
       }}
     >
-      <motion.div
-        animate={{ y: [0, -8, 0] }}
-        transition={{
-          duration: floatDuration,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        whileHover={{
-          y: -12,
-          scale: 1.03,
-          boxShadow: isRed
-            ? "0 25px 60px rgba(193,18,31,0.35)"
-            : "0 25px 60px rgba(0,0,0,0.4)",
-          transition: { duration: 0.35, ease: "easeOut" },
-        }}
-        className={`confession-card ${isRed ? "confession-card--red" : "confession-card--light"}`}
+      {/* Red glow behind red cards */}
+      {isRed && (
+        <div
+          className="absolute -inset-8 rounded-full opacity-20 blur-3xl pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, #c1121f 0%, transparent 70%)" }}
+        />
+      )}
+
+      {/* Quote mark */}
+      <span
+        className={`absolute top-3 left-5 font-heading text-6xl leading-none select-none pointer-events-none ${quoteColor}`}
+      >
+        &#8220;
+      </span>
+
+      {/* Content */}
+      <div className="relative z-10">
+        {/* Stars + stat */}
+        <div className="flex items-center justify-between mb-4">
+          <Stars count={review.stars} variant={review.variant} />
+          <span
+            className={`text-[9px] font-bold tracking-[0.2em] uppercase ${subTextColor}`}
+          >
+            {review.stat}
+          </span>
+        </div>
+
+        {/* Review text */}
+        <p
+          className={`text-base sm:text-lg leading-snug font-medium tracking-tight mb-6 ${textColor}`}
+          style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
+        >
+          &ldquo;{review.text}&rdquo;
+        </p>
+
+        {/* Divider */}
+        <div className={`w-10 h-[2px] mb-4 ${dividerColor}`} />
+
+        {/* Attribution */}
+        <div className="flex items-center gap-3">
+          <div
+            className={`w-9 h-9 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${initialsClass}`}
+          >
+            {review.initials}
+          </div>
+          <p className={`text-sm font-semibold leading-tight ${textColor}`}>
+            {review.name}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────── MARQUEE ROW ─────────────────────────── */
+
+function MarqueeRow({
+  reviews,
+  direction = "left",
+  speed = 35,
+}: {
+  reviews: Review[];
+  direction?: "left" | "right";
+  speed?: number;
+}) {
+  const [isPaused, setIsPaused] = useState(false);
+
+  /* Triple the cards for seamless looping */
+  const tripled = [...reviews, ...reviews, ...reviews];
+
+  const animationName = direction === "left" ? "marquee-reviews-left" : "marquee-reviews-right";
+  const duration = reviews.length * speed;
+
+  return (
+    <div
+      className="marquee-row relative overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <div
+        className="marquee-track flex gap-6 md:gap-8 w-max"
         style={{
-          transform: `translate(${pos.nudgeX}px, ${pos.nudgeY}px) rotate(${confession.rotation}deg)`,
+          animation: `${animationName} ${duration}s linear infinite`,
+          animationPlayState: isPaused ? "paused" : "running",
         }}
       >
-        {/* Red glow behind red cards */}
-        {isRed && (
-          <div
-            className="absolute -inset-8 rounded-full opacity-20 blur-3xl pointer-events-none"
-            style={{ background: "radial-gradient(ellipse, #c1121f 0%, transparent 70%)" }}
-          />
-        )}
-
-        {/* Quote mark */}
-        <span
-          className={`absolute top-4 left-6 font-heading text-7xl leading-none select-none pointer-events-none ${
-            isRed ? "text-white/15" : "text-[#c1121f]/15"
-          }`}
-        >
-          &#8220;
-        </span>
-
-        {/* Content */}
-        <div className="relative z-10">
-          <p
-            className={`text-lg sm:text-xl md:text-2xl leading-snug font-medium tracking-tight mb-8 ${
-              isRed ? "text-white" : "text-[#1a1a1a]"
-            }`}
-            style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
-          >
-            &ldquo;{confession.text}&rdquo;
-          </p>
-
-          {/* Divider */}
-          <div
-            className={`w-10 h-[2px] mb-5 ${
-              isRed ? "bg-white/30" : "bg-[#c1121f]/25"
-            }`}
-          />
-
-          {/* Attribution */}
-          <div className="flex items-center gap-3">
-            <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-                isRed
-                  ? "bg-white/20 text-white"
-                  : "bg-[#c1121f] text-white"
-              }`}
-            >
-              {confession.initials}
-            </div>
-            <div>
-              <p
-                className={`text-sm font-semibold leading-tight ${
-                  isRed ? "text-white" : "text-[#1a1a1a]"
-                }`}
-              >
-                {confession.name}
-              </p>
-              <p
-                className={`text-[10px] font-bold tracking-[0.2em] uppercase mt-0.5 ${
-                  isRed ? "text-white/60" : "text-[#c1121f]"
-                }`}
-              >
-                {confession.role}
-              </p>
-            </div>
+        {tripled.map((review, i) => (
+          <div key={`${review.name}-${i}`} className="flex-shrink-0 w-[300px] sm:w-[340px] md:w-[380px]">
+            <ReviewCard review={review} />
           </div>
-        </div>
-      </motion.div>
-    </motion.div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -288,82 +349,41 @@ function StatCard({ stat, index }: { stat: (typeof STATS)[0]; index: number }) {
 /* ─────────────────────────── INLINE STYLES ─────────────────────────── */
 
 const sectionStyles = `
-  .confession-card-wrapper {
-    display: flex;
-    align-items: start;
-    justify-content: center;
-  }
-
-  .confession-card {
+  /* ── Review Card Base ── */
+  .review-card {
     position: relative;
     border-radius: 16px;
-    padding: 40px 36px;
-    width: 100%;
-    max-width: 480px;
+    padding: 28px 24px;
     cursor: default;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition:
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
   }
 
-  .confession-card--light {
-    background: linear-gradient(145deg, #f8f5ef 0%, #f0ece4 100%);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.1);
+  .review-card:hover {
+    transform: rotate(0deg) translateY(-8px) scale(1.03) !important;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4) !important;
   }
 
-  .confession-card--red {
-    background: linear-gradient(145deg, #c1121f 0%, #960d17 100%);
-    box-shadow: 0 12px 40px rgba(193, 18, 31, 0.2), 0 4px 16px rgba(0, 0, 0, 0.3);
+  /* ── Marquee Keyframes ── */
+  @keyframes marquee-reviews-left {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-33.333%); }
   }
 
-  /* ── Desktop scattered grid ── */
-  .confessions-grid {
-    display: grid;
-    grid-template-columns: repeat(11, 1fr);
-    grid-template-rows: auto auto auto;
-    gap: 20px;
-    padding: 0 20px;
+  @keyframes marquee-reviews-right {
+    0%   { transform: translateX(-33.333%); }
+    100% { transform: translateX(0); }
   }
 
-  /* ── Tablet ── */
-  @media (max-width: 1024px) {
-    .confessions-grid {
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: auto;
-      gap: 28px;
-      padding: 0 16px;
-    }
-
-    .confession-card-wrapper {
-      grid-column: auto !important;
-      grid-row: auto !important;
-    }
-
-    .confession-card {
-      transform: none !important;
-      max-width: 100%;
-    }
-
-    .confession-card-wrapper:last-child {
-      grid-column: 1 / -1 !important;
-      justify-content: center;
-    }
+  /* ── Marquee Row ── */
+  .marquee-row {
+    padding: 20px 0;
   }
 
-  /* ── Mobile ── */
-  @media (max-width: 640px) {
-    .confessions-grid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-      padding: 0 8px;
-    }
-
-    .confession-card-wrapper:last-child {
-      grid-column: auto !important;
-    }
-
-    .confession-card {
-      padding: 28px 24px;
-      border-radius: 14px;
-    }
+  .marquee-track {
+    will-change: transform;
   }
 
   /* ── Floating keyframe for ambient glow ── */
@@ -376,6 +396,10 @@ const sectionStyles = `
 /* ─────────────────────────── MAIN EXPORT ─────────────────────────── */
 
 export default function Testimonials() {
+  /* Split reviews into two rows for visual variety */
+  const row1 = REVIEWS.slice(0, 5);
+  const row2 = REVIEWS.slice(5, 10);
+
   return (
     <section id="testimonials" className="bg-black overflow-hidden">
       <style dangerouslySetInnerHTML={{ __html: sectionStyles }} />
@@ -453,7 +477,7 @@ export default function Testimonials() {
           >
             <span className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary text-[9px] md:text-[10px] font-bold tracking-[0.3em] uppercase px-4 py-2 rounded-full">
               <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-              Real Warriors · Real Results
+              One of the Most Trusted Gyms in Town
             </span>
           </motion.div>
 
@@ -507,23 +531,24 @@ export default function Testimonials() {
         <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent via-white/8 to-transparent" />
       </div>
 
-      {/* ══ PART 2 — WARRIOR CONFESSIONS ════════════════════════════ */}
-      <div className="relative py-20 md:py-28 px-4 md:px-8">
+      {/* ══ PART 2 — MEMBER STORIES MARQUEE ════════════════════════════ */}
+      <div className="relative py-20 md:py-28 px-0">
 
         {/* Background noise texture */}
         <div className="absolute inset-0 bg-noise pointer-events-none" />
 
-        {/* Subtle dark concrete texture overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
+        {/* Concrete texture background */}
+        <div className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none">
+          <Image
+            src="/concrete_texture.webp"
+            alt=""
+            fill
+            className="object-cover"
+            aria-hidden="true"
+          />
+        </div>
 
-        {/* Ambient red glows behind the section */}
+        {/* Ambient red glows */}
         <div
           className="absolute top-1/4 left-[15%] w-[400px] h-[400px] rounded-full pointer-events-none"
           style={{
@@ -543,9 +568,9 @@ export default function Testimonials() {
           }}
         />
 
-        <div className="container-max relative z-10">
-
-          {/* ── Section Label ── */}
+        {/* Section header */}
+        <div className="container-max relative z-10 px-4 md:px-8 mb-16 md:mb-20">
+          {/* Small label */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -559,30 +584,50 @@ export default function Testimonials() {
             </span>
           </motion.div>
 
-          {/* ── Editorial Heading ── */}
+          {/* Editorial Heading */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-center mb-16 md:mb-24"
+            className="text-center"
           >
             <h3 className="font-heading text-6xl sm:text-7xl md:text-[8rem] lg:text-[10rem] text-white leading-[0.85] tracking-tighter uppercase">
-              Warrior
+              Member&apos;s
               <br />
-              <span className="text-primary">Confessions</span>
+              <span className="text-primary">confessions</span>
             </h3>
             <p className="text-gray-500 text-[10px] md:text-xs tracking-[0.25em] uppercase max-w-md mx-auto leading-relaxed mt-6">
-              Hear from warriors who transformed their lives inside our walls.
+              honest feedback from people who train with us every day.
             </p>
           </motion.div>
+        </div>
 
-          {/* ── Scattered Card Grid ── */}
-          <div className="confessions-grid">
-            {CONFESSIONS.map((confession, i) => (
-              <ConfessionCard key={i} confession={confession} index={i} />
-            ))}
-          </div>
+        {/* Marquee rows — full width, no container constraint */}
+        <div className="relative z-10 space-y-4 md:space-y-6">
+          {/* Edge fade overlays */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 md:w-32 z-20 bg-gradient-to-r from-black to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 md:w-32 z-20 bg-gradient-to-l from-black to-transparent" />
+
+          {/* Row 1 — moves left */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <MarqueeRow reviews={row1} direction="left" speed={6} />
+          </motion.div>
+
+          {/* Row 2 — moves right */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <MarqueeRow reviews={row2} direction="right" speed={7} />
+          </motion.div>
         </div>
       </div>
 

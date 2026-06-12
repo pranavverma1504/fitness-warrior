@@ -143,7 +143,7 @@ export default function GalleryCarousel() {
             <div className="flex items-center gap-3 mb-4">
               <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full animate-pulse-slow" />
               <span className="text-primary text-[8px] md:text-xs font-bold tracking-[0.3em] md:tracking-[0.4em] uppercase">
-                WARRIOR SANCTUARY
+                FITNESS WARRIOR
               </span>
             </div>
             <h2 className="text-5xl sm:text-6xl md:text-7xl font-heading text-white leading-[0.85] tracking-tighter uppercase">
@@ -152,7 +152,7 @@ export default function GalleryCarousel() {
             </h2>
           </div>
           <p className="max-w-sm text-gray-500 text-[10px] md:text-sm leading-relaxed tracking-wider uppercase font-medium lg:mb-2">
-            Step inside the Warrior Sanctuary — where every corner is engineered for elite performance.
+            Explore our well-equipped workout areas, spacious training zones, and facilities designed for effective fitness training.
           </p>
         </motion.div>
       </div>

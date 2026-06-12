@@ -10,42 +10,42 @@ const SERVICES = [
     id: "01",
     title: "STRENGTH TRAINING",
     desc: "Pure power development through compound lifting and strategic progressive overload protocols.",
-    image: "/service_strength.png",
+    image: "/service_strength.webp",
     alt: "Heavy weightlifting and strength training at Fitness Warrior Bhilai",
   },
   {
     id: "02",
     title: "PERSONAL TRAINING",
     desc: "1-on-1 elite coaching tailored to your biomechanics, goals, and transformation timeline.",
-    image: "/service_personal.png",
+    image: "/service_personal.webp",
     alt: "Personal training and coaching at Fitness Warrior Bhilai",
   },
   {
     id: "03",
-    title: "BODY TRANSFORMATION",
-    desc: "Comprehensive physique recomposition combining nutrition science with precision training.",
-    image: "/service_body_transform.png",
-    alt: "Body transformation program at Fitness Warrior Bhilai",
+    title: "MODERN EQUIPMENTS",
+    desc: "Equipped with the latest strength, cardio, and functional training machines for every fitness goal.",
+    image: "/service_body_transform.webp",
+    alt: "Modern equipment at Fitness Warrior Bhilai",
   },
   {
     id: "04",
     title: "CROSSFIT",
     desc: "High-intensity functional movements designed to build elite physical capability and mental fortitude.",
-    image: "/service_crossfit.png",
+    image: "/service_crossfit.webp",
     alt: "CrossFit training at Fitness Warrior Bhilai",
   },
   {
     id: "05",
     title: "GROUP CLASSES",
     desc: "High-energy collective training sessions that push limits through shared intensity and motivation.",
-    image: "/service_group_class.png",
+    image: "/service_group_class.webp",
     alt: "Group fitness classes at Fitness Warrior Bhilai",
   },
   {
     id: "06",
     title: "ZUMBA FITNESS",
     desc: "Rhythm-driven cardio that torches calories and elevates cardiovascular endurance through dance.",
-    image: "/service_zumba.png",
+    image: "/service_zumba.webp",
     alt: "Zumba dance fitness classes at Fitness Warrior Bhilai",
   },
 ];
@@ -168,7 +168,7 @@ export default function Services() {
               WE KNOW WHAT
             </span>
             <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-[7rem] xl:text-[8.5rem]">
-              WE'RE <span className="text-primary">GOOD AT!</span>
+              WE&apos;RE <span className="text-primary">GOOD AT!</span>
             </span>
           </h2>
         </motion.div>
@@ -293,33 +293,7 @@ function ServiceItem({
           )}
         </AnimatePresence>
 
-        {/* Arrow indicator */}
-        <motion.div
-          className={`
-            hidden lg:flex items-center justify-center w-10 h-10 shrink-0
-            transition-colors duration-500
-            ${isActive ? "text-primary" : "text-white/15"}
-          `}
-          animate={{
-            x: isActive ? 4 : 0,
-            scale: isActive ? 1.15 : 1,
-          }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="5" y1="12" x2="19" y2="12" />
-            <polyline points="12 5 19 12 12 19" />
-          </svg>
-        </motion.div>
+
       </div>
     </motion.div>
   );
