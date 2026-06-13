@@ -101,20 +101,15 @@ export default function Locations() {
             return (
               <motion.div
                 key={loc.id}
-                initial={{ opacity: 0, x: fromLeft ? -80 : 80 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
                 transition={{
-                  duration: 0.7,
-                  delay: i * 0.12,
-                  ease: [0.25, 0.46, 0.45, 0.94],
+                  duration: 0.6,
+                  delay: i * 0.1,
+                  ease: [0.22, 1, 0.36, 1],
                 }}
-                className="relative rounded-2xl overflow-hidden border border-white/10 hover:border-primary/40 transition-all duration-500 group"
-                style={{
-                  background: "rgba(11, 11, 11, 0.8)",
-                  backdropFilter: "blur(16px)",
-                  WebkitBackdropFilter: "blur(16px)",
-                }}
+                className="relative rounded-2xl overflow-hidden border border-white/10 hover:border-primary/40 transition-all duration-500 group bg-[#0b0b0b]/92 backdrop-blur-none md:bg-[#0b0b0b]/80 md:backdrop-blur-md will-change-transform"
               >
                 {/* Top accent on hover */}
                 <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

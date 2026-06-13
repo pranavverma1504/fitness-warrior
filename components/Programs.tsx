@@ -187,8 +187,21 @@ export default function Services() {
               service={service}
               index={idx}
               isActive={activeIndex === idx}
-              onHoverStart={() => setActiveIndex(idx)}
-              onHoverEnd={() => setActiveIndex(null)}
+              onHoverStart={() => {
+                if (typeof window !== "undefined" && window.innerWidth >= 1024) {
+                  setActiveIndex(idx);
+                }
+              }}
+              onHoverEnd={() => {
+                if (typeof window !== "undefined" && window.innerWidth >= 1024) {
+                  setActiveIndex(null);
+                }
+              }}
+              onClick={() => {
+                if (typeof window !== "undefined" && window.innerWidth < 1024) {
+                  setActiveIndex((prev) => (prev === idx ? null : idx));
+                }
+              }}
             />
           ))}
         </motion.div>
@@ -204,6 +217,7 @@ interface ServiceItemProps {
   isActive: boolean;
   onHoverStart: () => void;
   onHoverEnd: () => void;
+  onClick: () => void;
 }
 
 function ServiceItem({
@@ -212,12 +226,14 @@ function ServiceItem({
   isActive,
   onHoverStart,
   onHoverEnd,
+  onClick,
 }: ServiceItemProps) {
   return (
     <motion.div
       variants={itemVariants}
       onMouseEnter={onHoverStart}
       onMouseLeave={onHoverEnd}
+      onClick={onClick}
       className="group border-b border-white/10 cursor-pointer"
     >
       <div className="py-6 md:py-8 lg:py-10 flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8">

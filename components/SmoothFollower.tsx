@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 
 export default function SmoothFollower() {
   const [mounted, setMounted] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(false)
   
   const mousePosition = useRef({ x: 0, y: 0 })
   const dotPosition = useRef({ x: 0, y: 0 })
@@ -17,7 +18,27 @@ export default function SmoothFollower() {
   const BORDER_DOT_SMOOTHNESS = 0.1
 
   useEffect(() => {
+    const checkIsDesktop = () => window.innerWidth >= 1024
+
+    const updateDesktop = () => {
+      const desktop = checkIsDesktop()
+      setIsDesktop(desktop)
+      if (!desktop) {
+        document.body.style.cursor = "auto"
+      }
+    }
+
+    updateDesktop()
     setMounted(true)
+
+    window.addEventListener("resize", updateDesktop)
+    return () => {
+      window.removeEventListener("resize", updateDesktop)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isDesktop) return
 
     let animId: number;
     let isAnimating = false;
@@ -109,9 +130,9 @@ export default function SmoothFollower() {
       cancelAnimationFrame(animId)
       document.body.style.cursor = "auto"
     }
-  }, [])
+  }, [isDesktop])
 
-  if (!mounted) return null
+  if (!mounted || !isDesktop) return null
 
   return (
     <div 
