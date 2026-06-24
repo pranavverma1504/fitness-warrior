@@ -114,6 +114,7 @@ export default function Navbar() {
               height={16}
               priority
               className="h-[16px] md:h-[20px] w-auto object-contain"
+              style={{ width: "auto" }}
             />
             <span className="font-heading text-lg md:text-xl tracking-[0.15em] md:tracking-[0.2em] text-white">
               FITNESS WARRIOR

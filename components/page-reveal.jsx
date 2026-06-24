@@ -154,6 +154,7 @@ export default function PageReveal({
                         strokeWidth="1.5"
                         strokeLinecap="round"
                         strokeDasharray="283"
+                        initial={{ strokeDashoffset: 283 }}
                         animate={{
                           strokeDashoffset: 283 - (283 * loadingNumber) / 100,
                         }}
