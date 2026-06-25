@@ -63,7 +63,7 @@ export default function Hero({ isRevealed = false }: { isRevealed?: boolean }) {
           loop
           playsInline
           preload="auto"
-          poster="/fitness.webp"
+          poster="/fitness_hero_poster.png"
           className="absolute inset-0 w-full h-full object-cover object-[65%_center] md:object-center"
         >
           <source src="/hero_video.mp4" type="video/mp4" />
